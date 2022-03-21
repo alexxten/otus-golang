@@ -10,8 +10,29 @@ import (
 
 var ErrInvalidString = errors.New("invalid string")
 
+func is_string_valid(input_string string) (bool) {
+    var initial_string = []rune(input_string)
+    if unicode.IsDigit(initial_string[0]) {return false}
+
+    for i:=0;i< len(input_string);i++ {
+        if unicode.IsDigit(initial_string[i]) && unicode.IsDigit(initial_string[i+1]) {
+            return false
+        }
+    }
+    return true
+}
+
 func Unpack(input_string string) (string, error) {
     var initial_str = input_string
+
+    if len(initial_str) == 0 {
+        return "", nil
+    }
+    var is_valid = is_string_valid(initial_str)
+    if !is_valid {
+        return "", ErrInvalidString
+    }
+
     var formatted_str strings.Builder
 
     var arr = make([]string, 0)
@@ -32,12 +53,6 @@ func Unpack(input_string string) (string, error) {
 
     }
     fmt.Println(arr)
-    //switch {
-    //case unicode.IsDigit(rune(initial_str[0])):
-      //  fmt.Println("некорректно")
-    //}
-    //case unicode.IsDigit(v) && unicode.IsDigit(rune(initial_str[i+1])):
-    //		fmt.Println("некорректно")
 
     for _, v := range arr {
         switch {
