@@ -1,28 +1,30 @@
 package hw02unpackstring
 
 import (
-    "errors"
+	"errors"
+	"strconv"
 	"strings"
 	"unicode"
-	"strconv"
 )
 
 var ErrInvalidString = errors.New("invalid string")
 
-func IsStringValid(inputString string) (bool) {
-    var initialString = []rune(inputString)
-    if unicode.IsDigit(initialString[0]) {return false}
+func IsStringValid(inputString string) bool {
+	initialString := []rune(inputString)
+	if unicode.IsDigit(initialString[0]) {
+		return false
+	}
 
-    for i:=0;i<len(initialString)-1;i++ {
-        if unicode.IsDigit(initialString[i]) && unicode.IsDigit(initialString[i+1]) {
-            return false
-        }
-    }
-    return true
+	for i := 0; i < len(initialString)-1; i++ {
+		if unicode.IsDigit(initialString[i]) && unicode.IsDigit(initialString[i+1]) {
+			return false
+		}
+	}
+	return true
 }
 
 func Unpack(inputString string) (string, error) {
-	var initialString = inputString
+	initialString := inputString
 
 	// если пустая строка
 	if len(initialString) == 0 {
@@ -30,7 +32,7 @@ func Unpack(inputString string) (string, error) {
 	}
 
 	// валидируем строку
-	var isValid = IsStringValid(initialString)
+	isValid := IsStringValid(initialString)
 	if !isValid {
 		return "", ErrInvalidString
 	}
@@ -38,8 +40,8 @@ func Unpack(inputString string) (string, error) {
 	var formattedStr strings.Builder
 
 	// формируем массив строк, где элемент - символ или символ+цифра
-	var arr = make([]string, 0)
-	var initialStrRunes = []rune(initialString)
+	arr := make([]string, 0)
+	initialStrRunes := []rune(initialString)
 	for i, v := range initialStrRunes {
 		switch {
 		case i == len(initialStrRunes)-1:
