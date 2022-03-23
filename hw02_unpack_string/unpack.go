@@ -9,61 +9,62 @@ import (
 
 var ErrInvalidString = errors.New("invalid string")
 
-func is_string_valid(input_string string) (bool) {
-    var initial_string = []rune(input_string)
-    if unicode.IsDigit(initial_string[0]) {return false}
+func IsStringValid(inputString string) (bool) {
+    var initialString = []rune(inputString)
+    if unicode.IsDigit(initialString[0]) {return false}
 
-    for i:=0;i<len(initial_string)-1;i++ {
-        if unicode.IsDigit(initial_string[i]) && unicode.IsDigit(initial_string[i+1]) {
+    for i:=0;i<len(initialString)-1;i++ {
+        if unicode.IsDigit(initialString[i]) && unicode.IsDigit(initialString[i+1]) {
             return false
         }
     }
     return true
 }
 
-func Unpack(input_string string) (string, error) {
-    var initial_str = input_string
+func Unpack(inputString string) (string, error) {
+	var initialString = inputString
 
-    // если пустая строка
-    if len(initial_str) == 0 {
-        return "", nil
-    }
+	// если пустая строка
+	if len(initialString) == 0 {
+		return "", nil
+	}
 
-    // валидируем строку
-    var is_valid = is_string_valid(initial_str)
-    if !is_valid {
-        return "", ErrInvalidString
-    }
+	// валидируем строку
+	var isValid = IsStringValid(initialString)
+	if !isValid {
+		return "", ErrInvalidString
+	}
 
-    var formatted_str strings.Builder
+	var formattedStr strings.Builder
 
-    // формируем массив строк, где элемент - символ или символ+цифра
-    var arr = make([]string, 0)
-    for i, v := range initial_str {
-        switch {
-        case i == len(initial_str)-1:
-            if !unicode.IsDigit(v) {
-                arr = append(arr, string(v))
-            }
-        case unicode.IsDigit(v):
-            continue
-        case unicode.IsDigit(rune(initial_str[i+1])):
-            arr = append(arr, initial_str[i:i+2])
+	// формируем массив строк, где элемент - символ или символ+цифра
+	var arr = make([]string, 0)
+	var initialStrRunes = []rune(initialString)
+	for i, v := range initialStrRunes {
+		switch {
+		case i == len(initialStrRunes)-1:
+			if !unicode.IsDigit(v) {
+				arr = append(arr, string(v))
+			}
+		case unicode.IsDigit(v):
+			continue
+		case unicode.IsDigit(initialStrRunes[i+1]):
+			arr = append(arr, string(initialStrRunes[i:i+2]))
 
-        default:
-            arr = append(arr, string(v))
-        }
-    }
+		default:
+			arr = append(arr, string(v))
+		}
+	}
 
-    for _, v := range arr {
-        switch {
-        case len(v) == 2: // если символ+цифра
-            repeat, _ := strconv.Atoi(string(v[1]))
-            formatted_str.WriteString(strings.Repeat(string(v[0]), repeat))
-        default:
-            formatted_str.WriteString(string(v))
-        }
-    }
-
-	return formatted_str.String(), nil
+	for _, v := range arr {
+		runeVal := []rune(v)
+		switch {
+		case len(runeVal) == 2: // если символ+цифра
+			repeat, _ := strconv.Atoi(string(runeVal[1]))
+			formattedStr.WriteString(strings.Repeat(string(runeVal[0]), repeat))
+		default:
+			formattedStr.WriteString(v)
+		}
+	}
+	return formattedStr.String(), nil
 }
