@@ -37,7 +37,6 @@ func TestUnpack(t *testing.T) {
 	}
 }
 
-
 func TestUnpackInvalidString(t *testing.T) {
 	invalidStrings := []string{"3abc", "45", "aaa10b", "4абг", "в05"}
 	for _, tc := range invalidStrings {
@@ -48,4 +47,3 @@ func TestUnpackInvalidString(t *testing.T) {
 		})
 	}
 }
-
