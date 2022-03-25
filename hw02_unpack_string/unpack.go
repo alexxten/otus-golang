@@ -7,7 +7,12 @@ import (
 	"unicode"
 )
 
-var ErrInvalidString = errors.New("invalid string")
+const letterPlusNumberLen = 2
+
+var (
+	ErrInvalidString    = errors.New("invalid string")
+	ErrStringConvertion = errors.New("strconv.Atoi conversion error")
+)
 
 func IsStringValid(inputString string) bool {
 	initialString := []rune(inputString)
@@ -23,9 +28,7 @@ func IsStringValid(inputString string) bool {
 	return true
 }
 
-func Unpack(inputString string) (string, error) {
-	initialString := inputString
-
+func Unpack(initialString string) (string, error) {
 	// если пустая строка
 	if len(initialString) == 0 {
 		return "", nil
@@ -61,8 +64,11 @@ func Unpack(inputString string) (string, error) {
 	for _, v := range arr {
 		runeVal := []rune(v)
 		switch {
-		case len(runeVal) == 2: // если символ+цифра
-			repeat, _ := strconv.Atoi(string(runeVal[1]))
+		case len(runeVal) == letterPlusNumberLen: // если символ+цифра
+			repeat, err := strconv.Atoi(string(runeVal[1]))
+			if err != nil {
+				return "", ErrStringConvertion
+			}
 			formattedStr.WriteString(strings.Repeat(string(runeVal[0]), repeat))
 		default:
 			formattedStr.WriteString(v)
