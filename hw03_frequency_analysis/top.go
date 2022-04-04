@@ -19,6 +19,9 @@ func Top10(inputString string) []string {
 		return make([]string, 0)
 	}
 	matches := regularExpression.FindAllString(input, -1)
+	if len(matches) == 0 {
+	    return make([]string, 0)
+	}
 
 	counts := make(map[string]int)
 	for _, v := range matches {
