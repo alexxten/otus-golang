@@ -1,5 +1,7 @@
 package hw04lrucache
 
+import "fmt"
+
 type List interface {
 	Len() int
 	Front() *ListItem
@@ -45,8 +47,9 @@ func (l *list) PushBack(v interface{}) *ListItem {
 		l.head = newItem
 	default:
 		oldTail := l.tail
-		oldTail.Next = newItem
-		newItem.Prev = oldTail
+		fmt.Println(oldTail)
+		l.tail.Next = newItem
+		newItem.Prev = l.tail
 	}
 	l.tail = newItem
 	l.len++
@@ -56,14 +59,14 @@ func (l *list) PushBack(v interface{}) *ListItem {
 func (l *list) PushFront(v interface{}) *ListItem {
 	newItem := &ListItem{Value: v}
 	switch {
-	case l.head == nil:
-		l.head = newItem
+	case l.tail == nil:
+		l.tail = newItem
 	default:
 		oldHead := l.head
 		newItem.Next = oldHead
 		oldHead.Prev = newItem
-		l.head = newItem
 	}
+	l.head = newItem
 	l.len++
 	return newItem
 }
