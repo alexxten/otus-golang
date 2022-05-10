@@ -14,7 +14,7 @@ func TestList(t *testing.T) {
 		require.Nil(t, l.Front())
 		require.Nil(t, l.Back())
 	})
-/*
+
 	t.Run("complex", func(t *testing.T) {
 		l := NewList()
 
@@ -47,5 +47,25 @@ func TestList(t *testing.T) {
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
-	})*/
+	})
+
+	t.Run("test pointers", func(t *testing.T) {
+		l := NewList()
+
+		for i, v := range [...]int{10, 20, 30, 40} {
+			l.PushBack(v) // 10 20 30 40
+
+		second := l.Front().Next // 20
+		l.Remove(second)         // [10, 30, 40]
+		require.Equal(l.Front().Next, l.Back().Prev)
+		
+		first := l.Front() // 10
+		l.Remove(first)    // [30, 40]
+		require.Equal(l.Front().Next, l.Back().Prev)
+
+		last := l.Back  // 40
+		l.Remove(last)  // [30]
+		require.Equal(l.Front().Next, l.Back().Prev)
+		require.Equal(1, l.Len())
+	})
 }
