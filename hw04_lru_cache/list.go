@@ -72,10 +72,13 @@ func (l *list) PushBack(v interface{}) *ListItem {
 
 func (l *list) Remove(i *ListItem) {
 	switch {
-	case l.Front() == i:
+	case l.head == l.tail && l.head == i: // one element in list
+		l.head = nil
+		l.tail = nil
+	case l.head == i:
 		l.head = i.Next
 		l.head.Prev = nil
-	case l.Back() == i:
+	case l.tail == i:
 		l.tail = i.Prev
 		l.tail.Next = nil
 	default:
