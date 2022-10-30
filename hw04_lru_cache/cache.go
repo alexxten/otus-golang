@@ -46,6 +46,7 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 		tail := cache.queue.Back()
 		cache.queue.Remove(tail)
 		delete(cache.items, tail.Value.(*cacheItem).key)
+		delete(cache.queueMap, tail.Value.(*cacheItem).key)
 	}
 	return isPresent
 }
