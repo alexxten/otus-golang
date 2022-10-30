@@ -39,8 +39,7 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 		cache.items[key] = &cacheItem{key: key, value: value, listItem: newItem}
 	}
 
-	switch cache.capacity < cache.queue.Len() {
-	case true:
+	if cache.capacity < cache.queue.Len() {
 		tail := cache.queue.Back()
 		var tailCacheItem *cacheItem
 		for _, it := range cache.items {
@@ -56,8 +55,7 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 
 func (cache *lruCache) Get(key Key) (interface{}, bool) {
 	currentItem, isPresent := cache.items[key]
-	switch isPresent {
-	case true:
+	if isPresent {
 		cache.queue.MoveToFront(currentItem.listItem)
 		return currentItem.value, isPresent
 	}

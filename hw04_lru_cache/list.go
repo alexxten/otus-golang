@@ -50,7 +50,7 @@ func (l *list) PushFront(v interface{}) *ListItem {
 		newItem.Next = head
 		l.head = newItem
 	}
-	l.length += 1
+	l.length++
 	return l.head
 }
 
@@ -66,7 +66,7 @@ func (l *list) PushBack(v interface{}) *ListItem {
 		newItem.Prev = tail
 		l.tail = newItem
 	}
-	l.length += 1
+	l.length++
 	return l.tail
 }
 
@@ -87,7 +87,7 @@ func (l *list) Remove(i *ListItem) {
 		prev.Next = next
 		next.Prev = prev
 	}
-	l.length -= 1
+	l.length--
 }
 
 func (l *list) MoveToFront(i *ListItem) {
@@ -103,6 +103,6 @@ func (l *list) MoveToFront(i *ListItem) {
 		// change prev pointer of 2nd item
 		l.head.Next.Prev = i
 		// add +1 to list as we just moved it
-		l.length += 1
+		l.length++
 	}
 }
