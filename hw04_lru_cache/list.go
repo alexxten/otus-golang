@@ -96,10 +96,12 @@ func (l *list) MoveToFront(i *ListItem) {
 	default:
 		// delete item from list
 		l.Remove(i)
-		// change pointers
+		// change pointers of moved item
 		i.Next = l.head
 		i.Prev = nil
 		l.head = i
+		// change prev pointer of 2nd item
+		l.head.Next.Prev = i
 		// add +1 to list as we just moved it
 		l.length += 1
 	}

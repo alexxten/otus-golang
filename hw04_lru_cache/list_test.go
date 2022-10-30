@@ -74,4 +74,22 @@ func TestList(t *testing.T) {
 		require.Nil(t, l.Back())
 	})
 
+	t.Run("Move to front front and back", func(t *testing.T) {
+		l := NewList()
+		l.PushFront(1) // [1]
+		l.PushBack(2)  // [1, 2]
+
+		l.MoveToFront(l.Back()) // [2, 1]
+		require.Equal(t, 2, l.Front().Value)
+		require.Equal(t, 1, l.Back().Value)
+		require.Equal(t, l.Back(), l.Front().Next)
+		require.Equal(t, l.Front(), l.Back().Prev)
+
+		l.MoveToFront(l.Back()) // [1, 2]
+		require.Equal(t, 1, l.Front().Value)
+		require.Equal(t, 2, l.Back().Value)
+		require.Equal(t, l.Back(), l.Front().Next)
+		require.Equal(t, l.Front(), l.Back().Prev)
+	})
+
 }
