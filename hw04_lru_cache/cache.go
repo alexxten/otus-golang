@@ -12,12 +12,12 @@ type lruCache struct {
 	capacity int
 	queue    List
 	items    map[Key]*cacheItem
+	queueMap map[Key]*ListItem
 }
 
 type cacheItem struct {
-	key      Key
-	value    interface{}
-	listItem *ListItem
+	key   Key
+	value interface{}
 }
 
 func NewCache(capacity int) Cache {
@@ -25,6 +25,7 @@ func NewCache(capacity int) Cache {
 		capacity: capacity,
 		queue:    NewList(),
 		items:    make(map[Key]*cacheItem, capacity),
+		queueMap: make(map[Key]*ListItem, capacity),
 	}
 }
 
@@ -33,22 +34,18 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 	switch isPresent {
 	case true:
 		currentItem.value = value
-		cache.queue.MoveToFront(currentItem.listItem)
+		cache.queue.MoveToFront(cache.queueMap[key])
 	case false:
-		newItem := cache.queue.PushFront(value)
-		cache.items[key] = &cacheItem{key: key, value: value, listItem: newItem}
+		newItem := &cacheItem{key: key, value: value}
+		newListItem := cache.queue.PushFront(newItem)
+		cache.items[key] = newItem
+		cache.queueMap[key] = newListItem
 	}
 
 	if cache.capacity < cache.queue.Len() {
 		tail := cache.queue.Back()
-		var tailCacheItem *cacheItem
-		for _, it := range cache.items {
-			if it.listItem == tail {
-				tailCacheItem = it
-			}
-		}
 		cache.queue.Remove(tail)
-		delete(cache.items, tailCacheItem.key)
+		delete(cache.items, tail.Value.(*cacheItem).key)
 	}
 	return isPresent
 }
@@ -56,7 +53,7 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 func (cache *lruCache) Get(key Key) (interface{}, bool) {
 	currentItem, isPresent := cache.items[key]
 	if isPresent {
-		cache.queue.MoveToFront(currentItem.listItem)
+		cache.queue.MoveToFront(cache.queueMap[key])
 		return currentItem.value, isPresent
 	}
 	return currentItem, isPresent
@@ -65,4 +62,5 @@ func (cache *lruCache) Get(key Key) (interface{}, bool) {
 func (cache *lruCache) Clear() {
 	cache.queue = NewList()
 	cache.items = nil
+	cache.queueMap = nil
 }
