@@ -72,7 +72,7 @@ func (l *list) PushBack(v interface{}) *ListItem {
 
 func (l *list) Remove(i *ListItem) {
 	switch {
-	case l.head == l.tail && l.head == i: // one element in list
+	case l.length == 1 && l.head == i: // one element in list
 		l.head = nil
 		l.tail = nil
 	case l.head == i:
