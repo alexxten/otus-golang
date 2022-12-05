@@ -90,8 +90,8 @@ func TestCache(t *testing.T) {
 		require.False(t, ok)
 	})
 }
-func TestCacheMultithreading(t *testing.T) {
 
+func TestCacheMultithreading(t *testing.T) {
 	c := NewCache(10)
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
