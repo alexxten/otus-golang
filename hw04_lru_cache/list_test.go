@@ -51,8 +51,8 @@ func TestList(t *testing.T) {
 
 	t.Run("Remove front and back", func(t *testing.T) {
 		l := NewList()
-		l.PushFront(1) // [1]
-		l.PushBack(2)  // [1, 2]
+		l.PushBack(2)  // [2]
+		l.PushFront(1) // [1, 2]
 		l.Remove(l.Front())
 		l.Remove(l.Back())
 		require.Equal(t, 0, l.Len())
