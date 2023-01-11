@@ -4,12 +4,13 @@ import (
 	"errors"
 	"io"
 	"os"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var (
 	ErrUnsupportedFile       = errors.New("unsupported file")
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
-	ErrEmptyFile             = errors.New("zero file size")
 )
 
 func getNewFileSize(fileSize int64, offset int64, limit int64) int64 {
@@ -33,9 +34,6 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		return ErrUnsupportedFile
 	}
 	fileSize := fileInfo.Size()
-	if fileSize == 0 {
-		return ErrEmptyFile
-	}
 
 	// check offset val
 	if offset > fileSize {
@@ -61,6 +59,9 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil {
 		return err
 	}
-	_, err = io.CopyN(dst, src, n)
+	bar := pb.Full.Start64(n)
+	barReader := bar.NewProxyReader(src)
+	_, err = io.CopyN(dst, barReader, n)
+	bar.Finish()
 	return err
 }

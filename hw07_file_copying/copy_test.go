@@ -7,62 +7,53 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCopy(t *testing.T) {
-	t.Run("positive case, copy all file", func(t *testing.T) {
-		exp := "testdata/out_offset0_limit0.txt"
-		dst := "testdata/case_copy_all.txt"
-		defer os.Remove(dst)
-		err := Copy("testdata/input.txt", dst, 0, 0)
-		require.Nil(t, err)
-		expectedFile, err := os.ReadFile(exp)
-		require.Nil(t, err)
-		actualFile, err := os.ReadFile(dst)
-		require.Nil(t, err)
-		require.Equal(t, expectedFile, actualFile)
-	})
+func TestCopyPositive(t *testing.T) {
+	tests := []struct {
+		src            string
+		dst            string
+		offset         int64
+		limit          int64
+		expectedOutput string
+	}{
+		{src: "testdata/input.txt", dst: "testdata/case_copy_all.txt", offset: 0, limit: 0, expectedOutput: "testdata/out_offset0_limit0.txt"},
+		{src: "testdata/input.txt", dst: "testdata/case_offset.txt", offset: 6000, limit: 0, expectedOutput: "testdata/out_offset6000_limit0.txt"},
+		{src: "testdata/input.txt", dst: "testdata/case_limit.txt", offset: 0, limit: 1000, expectedOutput: "testdata/out_offset0_limit1000.txt"},
+		{src: "testdata/input.txt", dst: "testdata/case_offset_limit.txt", offset: 100, limit: 1000, expectedOutput: "testdata/out_offset100_limit1000.txt"},
+		{src: "testdata/input_empty.txt", dst: "testdata/case_empty.txt", offset: 0, limit: 0, expectedOutput: "testdata/out_empty.txt"},
+	}
 
-	t.Run("unsupported file", func(t *testing.T) {
-		err := Copy(
-			"/dev/urandom",
-			"testdata/input2.txt",
-			0,
-			0,
-		)
-		require.Equal(t, err, ErrUnsupportedFile)
-	})
-	t.Run("empty file", func(t *testing.T) {
-		err := Copy(
-			"testdata/input_empty.txt",
-			"testdata/input2.txt",
-			0,
-			0,
-		)
-		require.Equal(t, err, ErrEmptyFile)
-	})
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.expectedOutput, func(t *testing.T) {
+			defer os.Remove(tc.dst)
+			err := Copy(tc.src, tc.dst, tc.offset, tc.limit)
+			require.Nil(t, err)
+			expectedFile, err := os.ReadFile(tc.expectedOutput)
+			require.Nil(t, err)
+			actualFile, err := os.ReadFile(tc.dst)
+			require.Nil(t, err)
+			require.Equal(t, expectedFile, actualFile)
+		})
+	}
+}
 
-	t.Run("positive case, offset", func(t *testing.T) {
-		dst := "testdata/case_offset.txt"
-		exp := "testdata/out_offset6000_limit0.txt"
-		defer os.Remove(dst)
-		err := Copy("testdata/input.txt", dst, 6000, 0)
-		require.Nil(t, err)
-		expectedFile, err := os.ReadFile(exp)
-		require.Nil(t, err)
-		actualFile, err := os.ReadFile(dst)
-		require.Nil(t, err)
-		require.Equal(t, expectedFile, actualFile)
-	})
+func TestCopyNegative(t *testing.T) {
+	tests := []struct {
+		src           string
+		dst           string
+		offset        int64
+		limit         int64
+		expectedError error
+	}{
+		{src: "/dev/urandom", dst: "testdata/case_unsupported.txt", offset: 0, limit: 0, expectedError: ErrUnsupportedFile},
+		{src: "testdata/input.txt", dst: "testdata/case_offset_more_than_file.txt", offset: 10000, limit: 0, expectedError: ErrOffsetExceedsFileSize},
+	}
 
-	t.Run("positive case, limit", func(t *testing.T) {
-		dst := "testdata/case_limit.txt"
-		exp := "testdata/out_offset0_limit1000.txt"
-		defer os.Remove(dst)
-		err := Copy("testdata/input.txt", dst, 0, 1000)
-		require.Nil(t, err)
-		expectedFile, err := os.ReadFile(exp)
-		require.Nil(t, err)
-		actualFile, err := os.ReadFile(dst)
-		require.Nil(t, err)
-		require.Equal(t, expectedFile, actualFile)
-	})
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.expectedError.Error(), func(t *testing.T) {
+			err := Copy(tc.src, tc.dst, tc.offset, tc.limit)
+			require.Equal(t, err, tc.expectedError)
+		})
+	}
 }
