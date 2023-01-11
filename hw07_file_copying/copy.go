@@ -15,7 +15,7 @@ var (
 func getNewFileSize(fileSize int64, offset int64, limit int64) int64 {
 	n := fileSize
 	if offset > 0 {
-		n = n - offset
+		n -= offset
 	}
 	if limit > 0 && n > limit {
 		n = limit

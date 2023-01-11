@@ -1,9 +1,8 @@
 package main
 
 import (
-	"testing"
-
 	"os"
+	"testing"
 
 	"github.com/stretchr/testify/require"
 )
