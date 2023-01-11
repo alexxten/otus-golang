@@ -15,11 +15,41 @@ func TestCopyPositive(t *testing.T) {
 		limit          int64
 		expectedOutput string
 	}{
-		{src: "testdata/input.txt", dst: "testdata/case_copy_all.txt", offset: 0, limit: 0, expectedOutput: "testdata/out_offset0_limit0.txt"},
-		{src: "testdata/input.txt", dst: "testdata/case_offset.txt", offset: 6000, limit: 0, expectedOutput: "testdata/out_offset6000_limit0.txt"},
-		{src: "testdata/input.txt", dst: "testdata/case_limit.txt", offset: 0, limit: 1000, expectedOutput: "testdata/out_offset0_limit1000.txt"},
-		{src: "testdata/input.txt", dst: "testdata/case_offset_limit.txt", offset: 100, limit: 1000, expectedOutput: "testdata/out_offset100_limit1000.txt"},
-		{src: "testdata/input_empty.txt", dst: "testdata/case_empty.txt", offset: 0, limit: 0, expectedOutput: "testdata/out_empty.txt"},
+		{
+			src:            "testdata/input.txt",
+			dst:            "testdata/case_copy_all.txt",
+			offset:         0,
+			limit:          0,
+			expectedOutput: "testdata/out_offset0_limit0.txt",
+		},
+		{
+			src:            "testdata/input.txt",
+			dst:            "testdata/case_offset.txt",
+			offset:         6000,
+			limit:          0,
+			expectedOutput: "testdata/out_offset6000_limit0.txt",
+		},
+		{
+			src:            "testdata/input.txt",
+			dst:            "testdata/case_limit.txt",
+			offset:         0,
+			limit:          1000,
+			expectedOutput: "testdata/out_offset0_limit1000.txt",
+		},
+		{
+			src:            "testdata/input.txt",
+			dst:            "testdata/case_offset_limit.txt",
+			offset:         100,
+			limit:          1000,
+			expectedOutput: "testdata/out_offset100_limit1000.txt",
+		},
+		{
+			src:            "testdata/input_empty.txt",
+			dst:            "testdata/case_empty.txt",
+			offset:         0,
+			limit:          0,
+			expectedOutput: "testdata/out_empty.txt",
+		},
 	}
 
 	for _, tc := range tests {
@@ -45,8 +75,19 @@ func TestCopyNegative(t *testing.T) {
 		limit         int64
 		expectedError error
 	}{
-		{src: "/dev/urandom", dst: "testdata/case_unsupported.txt", offset: 0, limit: 0, expectedError: ErrUnsupportedFile},
-		{src: "testdata/input.txt", dst: "testdata/case_offset_more_than_file.txt", offset: 10000, limit: 0, expectedError: ErrOffsetExceedsFileSize},
+		{
+			src:           "/dev/urandom",
+			dst:           "testdata/case_unsupported.txt",
+			offset:        0,
+			limit:         0,
+			expectedError: ErrUnsupportedFile,
+		},
+		{
+			src:           "testdata/input.txt",
+			dst:           "testdata/case_offset_more_than_file.txt",
+			offset:        10000,
+			limit:         0,
+			expectedError: ErrOffsetExceedsFileSize},
 	}
 
 	for _, tc := range tests {
