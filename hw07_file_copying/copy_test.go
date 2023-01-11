@@ -87,7 +87,8 @@ func TestCopyNegative(t *testing.T) {
 			dst:           "testdata/case_offset_more_than_file.txt",
 			offset:        10000,
 			limit:         0,
-			expectedError: ErrOffsetExceedsFileSize},
+			expectedError: ErrOffsetExceedsFileSize,
+		},
 	}
 
 	for _, tc := range tests {
