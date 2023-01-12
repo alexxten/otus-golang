@@ -11,6 +11,7 @@ import (
 var (
 	ErrUnsupportedFile       = errors.New("unsupported file")
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
+	ErrFromPathEqToPath      = errors.New("from path equals to path")
 )
 
 func getNewFileSize(fileSize int64, offset int64, limit int64) int64 {
@@ -25,6 +26,9 @@ func getNewFileSize(fileSize int64, offset int64, limit int64) int64 {
 }
 
 func Copy(fromPath, toPath string, offset, limit int64) error {
+	if fromPath == toPath {
+		return ErrFromPathEqToPath
+	}
 	// get file info to check it
 	fileInfo, err := os.Stat(fromPath)
 	if err != nil {

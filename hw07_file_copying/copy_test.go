@@ -57,11 +57,11 @@ func TestCopyPositive(t *testing.T) {
 		t.Run(tc.expectedOutput, func(t *testing.T) {
 			defer os.Remove(tc.dst)
 			err := Copy(tc.src, tc.dst, tc.offset, tc.limit)
-			require.Nil(t, err)
+			require.NoError(t, err)
 			expectedFile, err := os.ReadFile(tc.expectedOutput)
-			require.Nil(t, err)
+			require.NoError(t, err)
 			actualFile, err := os.ReadFile(tc.dst)
-			require.Nil(t, err)
+			require.NoError(t, err)
 			require.Equal(t, expectedFile, actualFile)
 		})
 	}
@@ -88,6 +88,13 @@ func TestCopyNegative(t *testing.T) {
 			offset:        10000,
 			limit:         0,
 			expectedError: ErrOffsetExceedsFileSize,
+		},
+		{
+			src:           "testdata/input_empty.txt",
+			dst:           "testdata/input_empty.txt",
+			offset:        0,
+			limit:         0,
+			expectedError: ErrFromPathEqToPath,
 		},
 	}
 
