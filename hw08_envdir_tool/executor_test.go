@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,12 +12,14 @@ func TestRunCmd(t *testing.T) {
 	t.Run("testdata, success", func(t *testing.T) {
 		env, err := ReadDir("testdata/env")
 		require.NoError(t, err)
+		err = os.Chmod("test.sh", 0o777)
+		require.NoError(t, err)
 
-		// var returnCode int
+		var returnCode int
 		result := capturer.CaptureStdout(func() {
-			RunCmd([]string{"sh", "test.sh"}, env)
+			returnCode = RunCmd([]string{"sh", "test.sh"}, env)
 		})
-		// require.Equal(t, 0, returnCode)
+		require.Equal(t, 0, returnCode)
 		require.Equal(t, "PASS\n", result)
 	})
 

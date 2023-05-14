@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -28,7 +27,7 @@ func TestReadDir(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "smth=="), []byte("bar"), 0o666)
+		err = os.WriteFile(filepath.Join(dir, "smth=="), []byte("bar"), 0o666)
 		require.NoError(t, err)
 
 		env, err := ReadDir(dir)
