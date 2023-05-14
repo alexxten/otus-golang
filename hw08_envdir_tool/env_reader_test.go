@@ -24,11 +24,11 @@ func TestReadDir(t *testing.T) {
 	})
 
 	t.Run("= in filename", func(t *testing.T) {
-		dir, err := ioutil.TempDir("testdata", "tmp")
+		dir, err := os.MkdirTemp("testdata", "tmp")
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "smth=="), []byte("bar"), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "smth=="), []byte("bar"), 0o666)
 		require.NoError(t, err)
 
 		env, err := ReadDir(dir)
@@ -37,7 +37,7 @@ func TestReadDir(t *testing.T) {
 	})
 
 	t.Run("empty dir", func(t *testing.T) {
-		dir, err := ioutil.TempDir("testdata", "tmp")
+		dir, err := os.MkdirTemp("testdata", "tmp")
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 

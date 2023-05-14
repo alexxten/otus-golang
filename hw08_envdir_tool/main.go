@@ -5,9 +5,7 @@ import (
 	"os"
 )
 
-// envdir exits 111 if it has trouble reading d,
-// if it runs out of memory for environment variables,
-// or if it cannot run child
+// envdir exits 111 if it has trouble reading dir
 const EnvdirReturnCode = 111
 
 func main() {

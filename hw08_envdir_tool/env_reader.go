@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,7 +36,7 @@ func ReadFile(dir, fileName string) (string, error) {
 // ReadDir reads a specified directory and returns map of env variables.
 // Variables represented as files where filename is name of variable, file first line is a value.
 func ReadDir(dir string) (Environment, error) {
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -47,11 +46,14 @@ func ReadDir(dir string) (Environment, error) {
 		if strings.Contains(file.Name(), "=") {
 			continue
 		}
-		if !file.Mode().IsRegular() {
+		if !file.Type().IsRegular() {
 			continue
 		}
-
-		if file.Size() == 0 {
+		info, err := file.Info()
+		if err != nil {
+			return nil, err
+		}
+		if info.Size() == 0 {
 			result[file.Name()] = EnvValue{NeedRemove: true}
 			continue
 		}
