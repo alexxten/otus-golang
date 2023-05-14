@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,9 +16,9 @@ func TestRunCmd(t *testing.T) {
 		defer os.RemoveAll(dir)
 		err = os.Mkdir(filepath.Join(dir, "vars"), 0o777)
 		require.NoError(t, err)
-		err = ioutil.WriteFile(filepath.Join(dir, "vars", "FOO"), []byte("value from file"), 0o666)
+		err = os.WriteFile(filepath.Join(dir, "vars", "FOO"), []byte("value from file"), 0o666)
 		require.NoError(t, err)
-		err = ioutil.WriteFile(filepath.Join(dir, "t.sh"), []byte("#!/usr/bin/env bash\necho $1\necho $FOO\n"), 0o666)
+		err = os.WriteFile(filepath.Join(dir, "t.sh"), []byte("#!/usr/bin/env bash\necho $1\necho $FOO\n"), 0o666)
 		require.NoError(t, err)
 		err = os.Chmod(filepath.Join(dir, "t.sh"), 0o777)
 		require.NoError(t, err)
