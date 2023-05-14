@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// envdir exits 111 if it has trouble reading dir
+// EnvdirReturnCode envdir exits 111 if it has trouble reading dir
 const EnvdirReturnCode = 111
 
 func main() {
